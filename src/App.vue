@@ -14,14 +14,18 @@
         </select>
         <button class="actions__button">CREATE NEW ROLE</button>
       </div>
-    <div v-for="role in roleList" :key="role.name">
-      <RoleCard />
+    <div class="role-list">
+      <div v-for="role in roleList" :key="role.name">
+        <RoleCard :role="role" />
+      </div>
     </div>
+    
   </div>
 </template>
 
 <script>
 import RoleCard from './components/RoleCard.vue'
+import fake_data from './data/fake_data.json'
 
 export default {
   name: 'App',
@@ -30,9 +34,13 @@ export default {
   },
   data(){
     return{
-      roleList:[],
+      roleList:fake_data,
       selectedFilter:1
     }
+  },
+  mounted(){
+    console.log(this.roleList)
+    this.roleList = fake_data
   }
 }
 </script>
@@ -51,6 +59,9 @@ body{
   flex-direction: column;
   padding: 2.5em 5em;
 }
+button{
+  cursor: pointer;
+}
 .actions{
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -58,7 +69,8 @@ body{
   grid-template-areas:". label . ."
                       "input select . button";
   column-gap: 2.5em;
-  row-gap: 0px; 
+  row-gap: 0px;
+  padding: 15px;
 }
 .filter-div{
   display: flex;
@@ -87,4 +99,10 @@ body{
   position: absolute;
   right: 0;
 }
+.role-list{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 20px;
+}
+
 </style>
