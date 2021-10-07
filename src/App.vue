@@ -4,7 +4,7 @@
       <div class="actions">
         <label class="actions__label" for="filter">Role status</label>
         <div class="actions__input">
-          <input type="text" placeholder="Search" >
+          <input type="text" placeholder="Search" v-model="searchText">
           <font-awesome-icon class="icon" icon="search" />
         </div>
         <select class="actions__select" name="filter" v-model="selectedFilter">
@@ -15,8 +15,8 @@
         <button class="actions__button">CREATE NEW ROLE</button>
       </div>
     <div class="role-list">
-      <div v-for="role in roleList" :key="role.name">
-        <RoleCard :role="role" />
+      <div v-for="role in filteredList" :key="role.index">
+        <RoleCard :role="role" :initEdit="false" :index="role.index" @roleEdited="changeRole" @roleDelete="roleDeleted" />
       </div>
     </div>
     
@@ -35,12 +35,56 @@ export default {
   data(){
     return{
       roleList:fake_data,
-      selectedFilter:1
+      selectedFilter:"1",
+      searchText:""
+    }
+  },
+  computed:{
+    filteredList(){
+      console.log(this.selectedFilter)
+      let filterList = this.roleList.filter((a)=>{
+        if(a.name.toLowerCase().includes(this.searchText.toLowerCase()) || a.type.toLowerCase().includes(this.searchText.toLowerCase()))
+          return a
+      })
+      if(this.selectedFilter == "1"){
+        return filterList
+      }
+      else if(this.selectedFilter == "2"){
+        return filterList.filter((a)=>{
+          if(a.active)
+            return a
+        })
+      }
+      else if(this.selectedFilter == "3"){
+        return filterList.filter((a)=>{
+          if(!a.active)
+            return a
+        })
+      }
+      
+      return filterList
     }
   },
   mounted(){
     console.log(this.roleList)
     this.roleList = fake_data
+  },
+  methods:{
+    changeRole(changedRole){
+      let index = changedRole.index
+      this.roleList[index].name = changedRole.name
+      this.roleList[index].type = changedRole.type
+      this.roleList[index].description = changedRole.description
+      if(changedRole.modified)
+        this.roleList[index].modified = changedRole.modified
+    },
+    roleDeleted(index){
+      let realIndex = this.roleList.findIndex(a=>{
+        if(index==a.index)
+          return a
+      })
+      this.roleList.splice(realIndex,1)
+    }
   }
 }
 </script>
