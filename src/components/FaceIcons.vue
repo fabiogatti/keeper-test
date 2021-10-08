@@ -21,6 +21,7 @@ export default {
   display: flex;
   flex-direction: row;
   padding: 5px 0px;
+  align-items: center;
 }
 img{
   width: 45px;
